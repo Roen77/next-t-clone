@@ -1,47 +1,72 @@
-// "use client";
+"use client";
 
 import style from './signup.module.css';
 import {redirect, useRouter} from "next/navigation";
 import {ChangeEventHandler, FormEventHandler, useState} from "react";
 import BackButton from './BackButton';
+import onSubmit from '@/app/(beforeLogin)/_lib/signup'
+import { useFormState, useFormStatus } from 'react-dom';
+
+function showMessage(messasge: string) {
+  if (messasge === 'no_id') {
+    return '아이디를 입력하세요.';
+  }
+  if (messasge === 'no_name') {
+    return '닉네임을 입력하세요.';
+  }
+  if (messasge === 'no_password') {
+    return '비밀번호를 입력하세요.';
+  }
+  if (messasge === 'no_image') {
+    return '이미지를 업로드하세요.';
+  }
+  if (messasge === 'user_exists') {
+    return '이미 사용 중인 아이디입니다.';
+  }
+  return '';
+}
 
 export default function SignupModal() {
+  const [state, formAction] = useFormState(onSubmit, { message: '' });
+  const {pending} = useFormStatus()
 
-  const formAction = async (formData:FormData)=>{
+  // const formAction = onSubmit
 
-    "use server";
-    // 이렇게 검증해주는게좋음
-    if(!formData.get('id')){
-      return {message:'no id'}
-    }
-    let shoudRedirect =false;
-    try {
-      // const response = await fetch(`http://localhost:9090/api/users`,{
-      //   method:'post',
-      //   body:formData,
-      //   credentials:'include'
-      // })
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,{
-        method:'post',
-        body:formData,
-        credentials:'include'
-      })
-      console.log('res',response.status)
-      // 이미 있는 회원이 또.. 가입
-      if(response.status === 403){
-        return {message:'user_exists'}
-      }
-      shoudRedirect = true
-    } catch (err) {
-      console.log(err)
-      return
-    }
+  // const formAction = async (formData:FormData)=>{
 
-    if(shoudRedirect){
-      // trycatch안에서 사용 안됨
-      redirect('/home')
-    }
-  }
+  //   "use server";
+  //   // 이렇게 검증해주는게좋음
+  //   if(!formData.get('id')){
+  //     return {message:'no id'}
+  //   }
+  //   let shoudRedirect =false;
+  //   try {
+  //     // const response = await fetch(`http://localhost:9090/api/users`,{
+  //     //   method:'post',
+  //     //   body:formData,
+  //     //   credentials:'include'
+  //     // })
+  //     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,{
+  //       method:'post',
+  //       body:formData,
+  //       credentials:'include'
+  //     })
+  //     console.log('res',response.status)
+  //     // 이미 있는 회원이 또.. 가입
+  //     if(response.status === 403){
+  //       return {message:'user_exists'}
+  //     }
+  //     shoudRedirect = true
+  //   } catch (err) {
+  //     console.log(err)
+  //     return
+  //   }
+
+  //   if(shoudRedirect){
+  //     // trycatch안에서 사용 안됨
+  //     redirect('/home')
+  //   }
+  // }
 
   return (
     <>
@@ -78,9 +103,9 @@ export default function SignupModal() {
               </div>
             </div>
             <div className={style.modalFooter}>
-              {/* <button type="submit" className={style.actionButton} disabled={pending}>가입하기</button> */}
-              <button type="submit" className={style.actionButton} >가입하기</button>
-              {/* <div className={style.error}>{showMessage(state?.message)}</div> */}
+              <button type="submit" className={style.actionButton} disabled={pending}>가입하기</button>
+              {/* <button type="submit" className={style.actionButton} >가입하기</button> */}
+              <div className={style.error}>{showMessage(state?.message)}</div>
             </div>
           </form>
         </div>
