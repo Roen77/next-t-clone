@@ -1,18 +1,64 @@
 "use client";
 
 import style from '@/app/(beforeLogin)/_component/login.module.css';
-import {useState} from "react";
+// import { signIn } from '@/auth'; //우리가만든건 서버용
+import { signIn } from 'next-auth/react'; // 클라이언트용
+import { useRouter } from 'next/navigation';
+
+import {ChangeEventHandler, FormEventHandler, useState} from "react";
 
 export default function LoginModal() {
-  const [id, setId] = useState();
-  const [password, setPassword] = useState();
-  const [message, setMessage] = useState();
-  const onSubmit = () => {};
-  const onClickClose = () => {};
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const router = useRouter();
 
-  const onChangeId = () => {};
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    const  callbackUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`
 
-  const onChangePassword = () => {};
+    // console.log('cc',callbackUrl)
+    try {
+      await signIn("credentials", {
+        username: id,
+        password,
+        redirect: false,
+        // callbackUrl
+      })
+      console.log('성공!!!!!!!!!!!!!!')
+      router.replace('/home');
+    } catch (err) {
+      console.error('err가 무엇..',err);
+      setMessage('아이디와 비밀번호가 일치하지 않습니다.');
+    }
+    // signIn("credentials", {
+    //       username: id,
+    //       password,
+    //       redirect: false,
+    //       callbackUrl
+    //     }).then(res=>{
+    //       console.log('res',res)
+    //       // router.replace('/home');
+    //     }).catch(err=>{
+    //           console.error('err가 무엇..',err);
+    //   setMessage('아이디와 비밀번호가 일치하지 않습니다.');
+
+    //     })
+
+  };
+  const onClickClose = () => {
+    router.back();
+  };
+
+  const onChangeId: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setId(e.target.value);
+  };
+
+  const onChangePassword: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setPassword(e.target.value);
+  };
+
 
   return (
     <div className={style.modalBackground}>

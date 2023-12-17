@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
+import KakaoProvider from "next-auth/providers/kakao";
 import {NextResponse} from "next/server";
 
 export const {
@@ -11,6 +12,16 @@ export const {
     signIn: '/i/flow/login',
     newUser: '/i/flow/signup',
   },
+//   callbacks: {
+//     jwt({ token}) {
+//       console.log('auth.ts jwt', token);
+//       return token;
+//     },
+//     session({ session, newSession, user}) {
+//       console.log('auth.ts session', session, newSession, user);
+//       return session;
+//     }
+//   },
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
@@ -39,5 +50,7 @@ export const {
         }
       },
     }),
+    // 이런식으로 프로바이더 추가 가능
+    // KakaoProvider
   ]
 });
