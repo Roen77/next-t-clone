@@ -1,10 +1,10 @@
 import LoginModal from '@/app/(beforeLogin)/_component/LoginModal'
 import React from 'react'
 
-function Login() {
+function Page() {
   return (
     <LoginModal/>
   )
 }
 
-export default Login
+export default Page
