@@ -1,12 +1,15 @@
 "use client"
 
+import { Session } from "next-auth";
 import style from "./logoutButton.module.css";
 import {signOut, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
-
-export default function LogoutButton() {
+type Props = {
+  me: Session | null
+}
+export default function LogoutButton({me}:Props) {
   const router = useRouter();
-  const { data: me } = useSession();
+  // const { data: me } = useSession();
 
   console.log('logout user',me)
 
