@@ -31,8 +31,8 @@ export default function Post({ noImage }: Props) {
     target.Images.push(
       {imageId: 1, link: faker.image.urlLoremFlickr()},
       {imageId: 2, link: faker.image.urlLoremFlickr()},
-      {imageId: 3, link: faker.image.urlLoremFlickr()},
-      {imageId: 4, link: faker.image.urlLoremFlickr()},
+      // {imageId: 3, link: faker.image.urlLoremFlickr()},
+      // {imageId: 4, link: faker.image.urlLoremFlickr()},
     )
   }
 

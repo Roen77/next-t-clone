@@ -17,7 +17,7 @@ type Props = {
 }
 
 export default function PostImages({post}: Props) {
-  console.log("psotImage",post)
+
   if (!post.Images) return null;
   if (!post.Images.length) return null;
   if (post.Images.length === 1) {
