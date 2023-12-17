@@ -4,26 +4,28 @@ import Tab from "@/app/(afterLogin)/home/_component/Tab";
 import PostForm from "@/app/(afterLogin)/home/_component/PostForm";
 import Post from "@/app/(afterLogin)/_component/Post";
 import TabProvider from './_component/TabProvider';
-import { HydrationBoundary, dehydrate, useQueryClient } from '@tanstack/react-query';
+import { HydrationBoundary, QueryClient, dehydrate, useQueryClient } from '@tanstack/react-query';
+import { getPostRecommends } from './_lib/getPostRecommends';
+import PostRecommends from './_component/PostRecommends';
 
-async function  getPostRecommends() {
-  const res = await fetch(`http://localhost:9090/api/postRecommends`,{
-    next:{
-      tags:['posts','recommends']
-    },
-    // cache:'no-store' 캐싱안하려면 넣어라..
-  })
+// async function  getPostRecommends() {
+//   const res = await fetch(`http://localhost:9090/api/postRecommends`,{
+//     next:{
+//       tags:['posts','recommends']
+//     },
+//     // cache:'no-store' 캐싱안하려면 넣어라..
+//   })
 
-  if(!res.ok){
-    throw new Error('error')
-  }
+//   if(!res.ok){
+//     throw new Error('error')
+//   }
 
-  return res.json()
+//   return res.json()
 
-}
+// }
 export default async function Home() {
   // 서버에서 불러온 데이터를 클라이언트에서 react query가 물려받는다.
-  const queryClient = useQueryClient()
+  const queryClient = new QueryClient()
   await queryClient.prefetchQuery({
     queryKey:['posts','recommends'],
     queryFn:getPostRecommends
@@ -35,6 +37,8 @@ export default async function Home() {
     <TabProvider>
     <Tab/>
         <PostForm />
+        <PostRecommends/>
+        {/* <Post/>
         <Post/>
         <Post/>
         <Post/>
@@ -45,8 +49,7 @@ export default async function Home() {
         <Post/>
         <Post/>
         <Post/>
-        <Post/>
-        <Post/>
+        <Post/> */}
     </TabProvider>
     </HydrationBoundary>
     </main>
