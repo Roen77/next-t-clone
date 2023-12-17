@@ -1,8 +1,9 @@
 import React from 'react'
+import Home from '../../home/page'
 
 function Compose() {
   return (
-    <div>Compose</div>
+    <Home/>
   )
 }
 
