@@ -13,39 +13,60 @@ export default function LoginModal() {
   const [message, setMessage] = useState('');
   const router = useRouter();
 
+  // const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  //   e.preventDefault();
+  //   setMessage('');
+  //   const  callbackUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`
+
+  //   // console.log('cc',callbackUrl)
+  //   try {
+  //     await signIn("credentials", {
+  //       username: id,
+  //       password,
+  //       redirect: false,
+  //       // callbackUrl
+  //     })
+  //     console.log('성공!!!!!!!!!!!!!!')
+  //     router.replace('/home');
+  //   } catch (err) {
+  //     console.error('err가 무엇..',err);
+  //     setMessage('아이디와 비밀번호가 일치하지 않습니다.');
+  //   }
+  //   // signIn("credentials", {
+  //   //       username: id,
+  //   //       password,
+  //   //       redirect: false,
+  //   //       callbackUrl
+  //   //     }).then(res=>{
+  //   //       console.log('res',res)
+  //   //       // router.replace('/home');
+  //   //     }).catch(err=>{
+  //   //           console.error('err가 무엇..',err);
+  //   //   setMessage('아이디와 비밀번호가 일치하지 않습니다.');
+
+  //   //     })
+
+  // };
+
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setMessage('');
-    const  callbackUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`
-
-    // console.log('cc',callbackUrl)
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         username: id,
         password,
         redirect: false,
-        // callbackUrl
       })
-      console.log('성공!!!!!!!!!!!!!!')
-      router.replace('/home');
+      console.log('res',response)
+      if (response?.error) {
+        setMessage('아이디와 비밀번호가 일치하지 않습니다.');
+      } else {
+        router.replace('/home');
+      }
     } catch (err) {
-      console.error('err가 무엇..',err);
+      console.error(err);
       setMessage('아이디와 비밀번호가 일치하지 않습니다.');
     }
-    // signIn("credentials", {
-    //       username: id,
-    //       password,
-    //       redirect: false,
-    //       callbackUrl
-    //     }).then(res=>{
-    //       console.log('res',res)
-    //       // router.replace('/home');
-    //     }).catch(err=>{
-    //           console.error('err가 무엇..',err);
-    //   setMessage('아이디와 비밀번호가 일치하지 않습니다.');
-
-    //     })
-
   };
   const onClickClose = () => {
     router.back();

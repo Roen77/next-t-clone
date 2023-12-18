@@ -1,11 +1,10 @@
 "use server";
 
-import { signIn } from "@/auth";
 import {redirect} from "next/navigation";
-// import {signIn} from "@/auth";
+import {signIn} from "@/auth";
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async (_prevState: any, formData: FormData) => {
+export default async (prevState: any, formData: FormData) => {
   if (!formData.get('id') || !(formData.get('id') as string)?.trim()) {
     return { message: 'no_id' };
   }
@@ -18,7 +17,7 @@ export default async (_prevState: any, formData: FormData) => {
   if (!formData.get('image')) {
     return { message: 'no_image' };
   }
-  console.log('fetch url',process.env.NEXT_PUBLIC_BASE_URL)
+  formData.set('nickname', formData.get('name') as string);
   let shouldRedirect = false;
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
@@ -26,7 +25,7 @@ export default async (_prevState: any, formData: FormData) => {
       body: formData,
       credentials: 'include',
     })
-    console.log(response.status);
+    console.log(response.status,'sinup.ts 파일');
     if (response.status === 403) {
       return { message: 'user_exists' };
     }
@@ -39,10 +38,12 @@ export default async (_prevState: any, formData: FormData) => {
     })
   } catch (err) {
     console.error(err);
-    return;
+    return { message: null };
   }
-
+  console.log('redirect',shouldRedirect)
   if (shouldRedirect) {
+console.log('redirect',shouldRedirect)
     redirect('/home'); // try/catch문 안에서 X
   }
+  return { message: null };
 }
