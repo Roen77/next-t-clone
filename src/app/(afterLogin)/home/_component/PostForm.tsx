@@ -1,9 +1,10 @@
 "use client"
 
-import {ChangeEventHandler, FormEventHandler, useRef, useState} from "react";
+import {ChangeEventHandler, FormEvent, FormEventHandler, useRef, useState} from "react";
 import style from './postForm.module.css';
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Session } from "next-auth";
+import ReactTextareaAutosize from "react-textarea-autosize";
 
 type Props = {
   me: Session | null
@@ -13,6 +14,59 @@ export default function PostForm({ me }: Props) {
   const [preview, setPreview] = useState<Array<{ dataUrl: string, file: File } | null>>([]);
   const [content, setContent] = useState('');
   const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (e: FormEvent) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('content', content);
+      preview.forEach((p) => {
+        p && formData.append('images', p.file);
+      })
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`, {
+        method: 'post',
+        credentials: 'include',
+        body: formData,
+      });
+    },
+    async onSuccess(response, variable) {
+      const newPost = await response.json();
+      setContent('');
+      setPreview([]);
+      if (queryClient.getQueryData(['posts', 'recommends'])) {
+        queryClient.setQueryData(['posts', 'recommends'], (prevData: { pages: Post[][] }) => {
+          const shallow = {
+            ...prevData,
+            pages: [...prevData.pages],
+          };
+          shallow.pages[0] = [...shallow.pages[0]];
+          shallow.pages[0].unshift(newPost);
+          return shallow;
+        });
+      }
+      if (queryClient.getQueryData(['posts', 'followings'])) {
+        queryClient.setQueryData(['posts', 'followings'], (prevData: { pages: Post[][] }) => {
+          // const shallow = {
+          //   ...prevData,
+          //   pages: [...prevData.pages],
+          // };
+          // shallow.pages[0] = [...shallow.pages[0]];
+          // shallow.pages[0].unshift(newPost);
+          //     const shallow = {
+          //   ...prevData,
+          //   pages: [...prevData.pages],
+          // };
+          const shallow = [...prevData]
+          console.log('prev',prevData,newPost)
+          return [newPost,...shallow]
+        })
+      }
+    },
+    onError(error) {
+      console.error(error);
+      alert('업로드 중 에러가 발생했습니다.');
+    }
+  })
 
   const onChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
@@ -26,19 +80,54 @@ export default function PostForm({ me }: Props) {
     imageRef.current?.click();
   }
 
+  const onRemoveImage = (index: number) => () => {
+    setPreview((prevPreview) => {
+      const prev = [...prevPreview];
+      prev[index] = null;
+      return prev;
+    })
+  };
+
+  const onUpload: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    if (e.target.files) {
+      Array.from(e.target.files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview((prevPreview) => {
+            const prev = [...prevPreview];
+            prev[index] = {
+              dataUrl: reader.result as string,
+              file,
+            };
+            return prev;
+          })
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
   return (
-    <form className={style.postForm} onSubmit={onSubmit}>
+    <form className={style.postForm} onSubmit={mutation.mutate}>
       <div className={style.postUserSection}>
         <div className={style.postUserImage}>
           <img src={me.image} alt={me.id} />
         </div>
       </div>
       <div className={style.postInputSection}>
-        <textarea value={content} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?"/>
+        <ReactTextareaAutosize value={content} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?"/>
+        <div style={{ display: 'flex' }}>
+          {preview.map((v, index) => (
+            v && (<div key={index} style={{ flex: 1 }} onClick={onRemoveImage(index)}>
+              <img src={v.dataUrl} alt="미리보기" style={{ width: '100%', objectFit: 'contain', maxHeight: 100 }} />
+            </div>)
+          ))}
+        </div>
         <div className={style.postButtonSection}>
           <div className={style.footerButtons}>
             <div className={style.footerButtonLeft}>
-              <input type="file" name="imageFiles" multiple hidden ref={imageRef} />
+              <input type="file" name="imageFiles" multiple hidden ref={imageRef} onChange={onUpload} />
               <button className={style.uploadButton} type="button" onClick={onClickButton}>
                 <svg width={24} viewBox="0 0 24 24" aria-hidden="true">
                   <g>
