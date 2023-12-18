@@ -2,14 +2,17 @@
 
 import {ChangeEventHandler, FormEventHandler, useRef, useState} from "react";
 import style from './postForm.module.css';
+import { useQueryClient } from "@tanstack/react-query";
+import { Session } from "next-auth";
 
-export default function PostForm() {
+type Props = {
+  me: Session | null
+}
+export default function PostForm({ me }: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<Array<{ dataUrl: string, file: File } | null>>([]);
   const [content, setContent] = useState('');
-  const me = {
-    id: 'zerohch0',
-    image: '/5Udwvqim.jpg'
-  };
+  const queryClient = useQueryClient();
 
   const onChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);

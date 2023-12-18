@@ -8,6 +8,7 @@ import { HydrationBoundary, QueryClient, dehydrate, useQueryClient } from '@tans
 import { getPostRecommends } from './_lib/getPostRecommends';
 import PostRecommends from './_component/PostRecommends';
 import TabDecider from './_component/TabDecider';
+import { auth } from '@/auth';
 
 // async function  getPostRecommends() {
 //   const res = await fetch(`http://localhost:9090/api/postRecommends`,{
@@ -25,6 +26,7 @@ import TabDecider from './_component/TabDecider';
 
 // }
 export default async function Home() {
+  const session = await auth();
   // 서버에서 불러온 데이터를 클라이언트에서 react query가 물려받는다.
   const queryClient = new QueryClient()
   await queryClient.prefetchQuery({
@@ -37,7 +39,7 @@ export default async function Home() {
       <HydrationBoundary state={dehydratedState}>
     <TabProvider>
     <Tab/>
-        <PostForm />
+        <PostForm me={session} />
         <TabDecider/>
         {/* <PostRecommends/> */}
         {/* <Post/>
