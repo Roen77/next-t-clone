@@ -29,9 +29,14 @@ export default async function Home() {
   const session = await auth();
   // 서버에서 불러온 데이터를 클라이언트에서 react query가 물려받는다.
   const queryClient = new QueryClient()
-  await queryClient.prefetchQuery({
-    queryKey:['posts','recommends'],
-    queryFn:getPostRecommends
+  // await queryClient.prefetchQuery({
+  //   queryKey:['posts','recommends'],
+  //   queryFn:getPostRecommends
+  // })
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['posts', 'recommends'],
+    queryFn: getPostRecommends,
+    initialPageParam: 0,
   })
   const dehydratedState = dehydrate(queryClient)
   return (
