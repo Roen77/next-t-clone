@@ -1,5 +1,6 @@
 import {QueryFunction} from "@tanstack/query-core";
 import {User} from "@/model/User";
+import { cookies } from "next/headers";
 
 export const getUser: QueryFunction<User, [_1: string, _2: string]>
   = async ({ queryKey }) => {
@@ -9,6 +10,7 @@ export const getUser: QueryFunction<User, [_1: string, _2: string]>
       tags: ['users', username],
     },
     credentials: 'include',
+    // headers:{Cookie:cookies().toString()},
     cache: 'no-store',
   });
   // The return value is *not* serialized
