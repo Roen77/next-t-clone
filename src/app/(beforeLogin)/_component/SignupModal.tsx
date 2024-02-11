@@ -1,8 +1,8 @@
 "use client";
 
 import style from './signup.module.css';
-import {redirect, useRouter} from "next/navigation";
-import {ChangeEventHandler, FormEventHandler, useState} from "react";
+import { redirect, useRouter } from "next/navigation";
+import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import BackButton from './BackButton';
 import onSubmit from '@/app/(beforeLogin)/_lib/signup'
 import { useFormState, useFormStatus } from 'react-dom';
@@ -28,7 +28,7 @@ function showMessage(messasge: string) {
 
 export default function SignupModal() {
   const [state, formAction] = useFormState(onSubmit, { message: '' });
-  const {pending} = useFormStatus()
+  const { pending } = useFormStatus()
 
   // const formAction = onSubmit
 
@@ -70,7 +70,7 @@ export default function SignupModal() {
 
   return (
     <>
-       <div className={style.modalBackground}>
+      <div className={style.modalBackground}>
         <div className={style.modal}>
           <div className={style.modalHeader}>
             <BackButton />
@@ -81,19 +81,19 @@ export default function SignupModal() {
               <div className={style.inputDiv}>
                 <label className={style.inputLabel} htmlFor="id">아이디</label>
                 <input id="id" name="id" className={style.input} type="text" placeholder=""
-                     required
+                  required
                 />
               </div>
               <div className={style.inputDiv}>
                 <label className={style.inputLabel} htmlFor="name">닉네임</label>
                 <input id="name" name="name" className={style.input} type="text" placeholder=""
-                    required
+                  required
                 />
               </div>
               <div className={style.inputDiv}>
                 <label className={style.inputLabel} htmlFor="password">비밀번호</label>
                 <input id="password" name="password" className={style.input} type="password" placeholder=""
-                     required
+                  required
                 />
               </div>
               <div className={style.inputDiv}>
@@ -105,7 +105,7 @@ export default function SignupModal() {
             <div className={style.modalFooter}>
               <button type="submit" className={style.actionButton} disabled={pending}>가입하기</button>
               {/* <button type="submit" className={style.actionButton} >가입하기</button> */}
-              <div className={style.error}>{showMessage(state?.message)}</div>
+              <div className={style.error}>{showMessage(state?.message || '')}</div>
             </div>
           </form>
         </div>

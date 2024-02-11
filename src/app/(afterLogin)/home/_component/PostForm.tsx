@@ -1,10 +1,12 @@
 "use client"
 
-import {ChangeEventHandler, FormEvent, FormEventHandler, useRef, useState} from "react";
+import { ChangeEventHandler, FormEvent, FormEventHandler, useRef, useState } from "react";
 import style from './postForm.module.css';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Session } from "next-auth";
+
 import ReactTextareaAutosize from "react-textarea-autosize";
+import { Post } from "@/model/Post";
+import { Session } from "@auth/core/types";
 
 type Props = {
   me: Session | null
@@ -56,9 +58,10 @@ export default function PostForm({ me }: Props) {
           //   ...prevData,
           //   pages: [...prevData.pages],
           // };
+          // @ts-ignore
           const shallow = [...prevData]
-          console.log('prev',prevData,newPost)
-          return [newPost,...shallow]
+          console.log('prev', prevData, newPost)
+          return [newPost, ...shallow]
         })
       }
     },
@@ -112,11 +115,12 @@ export default function PostForm({ me }: Props) {
     <form className={style.postForm} onSubmit={mutation.mutate}>
       <div className={style.postUserSection}>
         <div className={style.postUserImage}>
+          {/* @ts-ignore */}
           <img src={me.image} alt={me.id} />
         </div>
       </div>
       <div className={style.postInputSection}>
-        <ReactTextareaAutosize value={content} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?"/>
+        <ReactTextareaAutosize value={content} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?" />
         <div style={{ display: 'flex' }}>
           {preview.map((v, index) => (
             v && (<div key={index} style={{ flex: 1 }} onClick={onRemoveImage(index)}>

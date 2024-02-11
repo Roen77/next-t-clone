@@ -6,8 +6,9 @@ import { ChangeEventHandler, FormEvent, FormEventHandler, useRef, useState } fro
 import { useRouter } from 'next/navigation';
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import { useModalStore } from '@/store/modal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+import { Post } from '@/model/Post';
 export default function TweetModal() {
   const [content, setContent] = useState('');
   const imageRef = useRef<HTMLInputElement>(null);
@@ -86,7 +87,7 @@ export default function TweetModal() {
       preview.forEach((p) => {
         p && formData.append('images', p.file);
       })
-      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${parent.postId}/comments`, {
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${parent?.postId}/comments`, {
         method: 'post',
         credentials: 'include',
         body: formData,
