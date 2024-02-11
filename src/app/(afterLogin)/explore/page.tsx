@@ -1,8 +1,14 @@
+import { Metadata } from "next";
 import TrendSection from "./_component/TrendSection";
 import style from "./explore.module.css";
 import SearchForm from "@/app/(afterLogin)/_component/SearchForm";
 
 
+export const metadata: Metadata = {
+  title: '탐색 / Z',
+  description: '탐색해보세요!',
+
+}
 export default function Home() {
   return (
     <main className={style.main}>
@@ -11,7 +17,7 @@ export default function Home() {
       </div>
       <div className={style.trend}>
         <h3>나를 위한 트렌드</h3>
-        <TrendSection/>
+        <TrendSection />
         {/* <Trend />
         <Trend />
         <Trend />
