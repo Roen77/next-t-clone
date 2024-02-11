@@ -6,8 +6,10 @@ import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query
 import { getUserServer } from './_lib/getUserServer';
 import { getUserPosts } from './_lib/getUserPosts';
 import UserPosts from './_component/UserPosts';
-import UserInfo from './_component/UserInfo';
+
 import { User } from '@/model/User';
+import UserInfo from './_component/UserInfo';
+
 
 
 export async function generateMetadata({ params }: Props) {
